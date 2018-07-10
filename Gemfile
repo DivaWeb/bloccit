@@ -67,6 +67,7 @@ group :production do
 end
 
 gem 'jquery-rails'
+gem 'bootstrap-sass'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
