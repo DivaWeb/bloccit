@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
+
    resources :questions
    resources :welcome
    resources :topics do
 
    resources :posts, except: [:index]
+   resources :sponsored_posts, except: [:index]
  end
 
 
