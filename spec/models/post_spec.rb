@@ -59,6 +59,22 @@ it { is_expected.to validate_length_of(:body).is_at_least(20) }
       end
     end
 
+    describe "#create_vote" do
+      it "sets the post up_votes to 1" do
+        expect(post.up_votes).to eq(1)
+      end
+
+      it "calls #create_vote when a post is created" do
+        post = topic.posts.new(title: RandomData.random_sentence, body: RandomData.random_sentence, user: user)
+        expect(post).to receive(:create_vote)
+        post.save
+      end
+
+      it "associates the vote witht he owner of the post" do
+        expect(post.votes.first.user).to eq(post.user)
+      end
+    end
+
     describe "#update_rank" do
  # #28
        it "calculates the correct rank" do
