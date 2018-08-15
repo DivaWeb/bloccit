@@ -1,5 +1,8 @@
 class TopicsController < ApplicationController
 
+  before_action :require_sign_in, expect: [:index, :show]
+  before_action :authorize_user, except: [:index, :show]
+
   def update
     @topic = Topic.find(params[:id])
     @topic.assign_attributes(topic_params)
@@ -18,12 +21,16 @@ class TopicsController < ApplicationController
   end
 
   def index
-    @topics = Topic.all
+    @topics = Topic.visible_to(current_user)
   end
 
   def show
     @topic = Topic.find(params[:id])
+
+    unless @topic.public || current_user
+      flash[:alert] = "You must be signed in to view private topics."
   end
+end 
 
  def new
    @topic = Topic.new
@@ -54,5 +61,12 @@ class TopicsController < ApplicationController
   private
   def topic_params
     params.require(:topic).permit(:name, :description, :public)
-  end 
+  end
+
+  def authorize_user
+    unless current_user.admin?
+      flash[:alert] = "You must be an admin to do that."
+      redirect_to topics_path
+end
+end
 end
