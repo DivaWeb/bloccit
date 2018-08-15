@@ -2,8 +2,9 @@ class Post < ApplicationRecord
   belongs_to :topic
   belongs_to :user
    has_many :comments, dependent: :destroy
+   has_many :votes, dependent: :destroy
 
-   default_scope { order('created_at DESC') }
+   default_scope { order('rank DESC') }
    scope :ordered_by_title, -> { order('title DESC') }
    scope :ordered_by_reverse_created_at, -> { order('created_at ASC') }
 
@@ -11,4 +12,25 @@ class Post < ApplicationRecord
    validates :body, length: { minimum: 20 }, presence: true
    validates :topic, presence: true
    validates :user, presence: true
+
+   def up_votes
+# #9
+    votes.where(value: 1).count
+  end
+
+  def down_votes
+# #10
+    votes.where(value: -1).count
+  end
+
+  def points
+# #11
+    votes.sum(:value)
+  end
+
+  def update_rank
+  age_in_days = (created_at - Time.new(1970,1,1)) / 1.day.seconds
+  new_rank = points + age_in_days
+  update_attribute(:rank, new_rank)
+end
 end
