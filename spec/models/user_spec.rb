@@ -103,6 +103,11 @@ RSpec.describe User, type: :model do
  # #3
        expect(user.favorite_for(@post)).to eq(favorite)
      end
+
+     it "adds the favorite to the user account" do
+       favorite = user.favorites.where(post: @post).create
+       expect(user.favorites.any?).to be_truthy
+     end
    end
 
    describe ".avatar_url" do
@@ -116,4 +121,3 @@ RSpec.describe User, type: :model do
        expect(known_user.avatar_url(48)).to eq(expected_gravatar)
      end
    end
- 
